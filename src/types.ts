@@ -8,6 +8,7 @@ export interface Move {
   employeeID: number;
   newSupervisorID: number;
   oldSupervisorID: number;
+  subordinatesMoved: Employee[];
 }
 
 export interface IEmployeeOrgApp {

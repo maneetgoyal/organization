@@ -5,11 +5,10 @@ import type { Employee, IEmployeeOrgApp, Move } from "./types";
 export class EmployeeOrgApp implements IEmployeeOrgApp {
   ceo: Employee;
 
-  private moves: Move[];
+  private lastMove: Move | undefined;
 
   constructor(employee: Employee) {
     this.ceo = employee;
-    this.moves = [];
   }
 
   private findEmployee(currentEmployee: Employee, employeeID: number): string | undefined {
@@ -51,7 +50,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
   }
 
   public move(employeeID: number, supervisorID: number): void {
-    const newMove: Move = { employeeID, newSupervisorID: supervisorID, oldSupervisorID: supervisorID };
+    this.lastMove = { employeeID, oldSupervisorID: NaN, newSupervisorID: supervisorID, subordinatesMoved: [] };
     const employeePath = this.findEmployee(this.ceo, employeeID);
     if (typeof employeePath === "string") {
       const employee = this.fetchEmployee(employeePath);
@@ -61,9 +60,11 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
         if (typeof oldSupervisorPath === "string") {
           const oldSupervisor = this.fetchEmployee(oldSupervisorPath);
           if (typeof oldSupervisor !== undefined) {
+            this.lastMove.oldSupervisorID = oldSupervisor?.uniqueID ?? NaN;
             while (employee.subordinates.length > 0) {
               const subordinate = employee.subordinates.pop() as Employee;
               oldSupervisor?.subordinates.push(subordinate);
+              this.lastMove.subordinatesMoved.push(subordinate);
             }
           }
         }
@@ -78,17 +79,14 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
         }
       }
     }
-
-
-    this.moves.push(newMove);
   }
 
   public undo(): void {
-    console.log("Undo", this.moves)
+    console.log("redo", this.lastMove)
   }
 
   public redo(): void {
-    console.log("redo", this.moves)
+    console.log("redo", this.lastMove)
   }
 }
 
