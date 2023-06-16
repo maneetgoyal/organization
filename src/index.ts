@@ -11,7 +11,8 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
   }
 
   public move(employeeID: number, supervisorID: number): void {
-    console.log(employeeID, supervisorID)
+    const newMove: Move = { employeeID, supervisorID };
+    this.moves.push(newMove);
   }
 
   public undo(): void {
