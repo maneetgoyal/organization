@@ -1,3 +1,4 @@
+import { Mark } from "./example";
 import type { Employee, IEmployeeOrgApp, Move } from "./types";
 
 export class EmployeeOrgApp implements IEmployeeOrgApp {
@@ -10,10 +11,10 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
     this.moves = [];
   }
 
-  private findEmployee(currentEmployee: Employee, employeeID: number): string | undefined {
+  public findEmployee(currentEmployee: Employee, employeeID: number): string | undefined {
     let path: string | undefined;
     if (currentEmployee.uniqueID === employeeID) {
-      path = "uniqueID";
+      path = "";
     } else {
       const index = currentEmployee.subordinates.findIndex(ele => ele.uniqueID === employeeID);
       if (index !== -1) {
@@ -42,3 +43,8 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
     console.log("redo", this.moves)
   }
 }
+
+(() => {
+  const app = new EmployeeOrgApp(Mark);
+  console.log(app.findEmployee(app.ceo, 4));
+})();
