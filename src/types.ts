@@ -1,5 +1,5 @@
 export interface Employee {
-    uniqueId: number;
+    uniqueID: number;
     name: string;
     subordinates: Employee[];
 }
