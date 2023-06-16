@@ -1,5 +1,5 @@
 import { Mark } from "./example";
-import { get } from "lodash";
+import get from "lodash/get";
 import type { Employee, IEmployeeOrgApp, Move } from "./types";
 
 export class EmployeeOrgApp implements IEmployeeOrgApp {
