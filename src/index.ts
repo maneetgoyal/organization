@@ -11,7 +11,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
   }
 
   public move(employeeID: number, supervisorID: number): void {
-    const newMove: Move = { employeeID, supervisorID };
+    const newMove: Move = { employeeID, newSupervisorID: supervisorID, oldSupervisorID: supervisorID };
     this.moves.push(newMove);
   }
 
