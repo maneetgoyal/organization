@@ -4,6 +4,11 @@ export interface Employee {
     subordinates: Employee[];
 }
 
+export interface Move {
+    employeeID: number;
+    supervisorID: number;
+}
+
 export interface IEmployeeOrgApp {
     ceo: Employee;
     /**
