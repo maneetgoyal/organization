@@ -94,7 +94,5 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
 
 (() => {
   const app = new EmployeeOrgApp(Mark);
-  // console.log(JSON.stringify(Mark));
   app.move(12, 14);
-  // console.log(JSON.stringify(app.ceo));
 })();
