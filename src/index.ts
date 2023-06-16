@@ -40,16 +40,26 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
     return path;
   }
 
+  private fetchEmployee(employeePath: string): Employee | undefined {
+    let employee: Employee | undefined;
+    if (employeePath === "") {
+      employee = this.ceo;
+    } else {
+      employee = get(this.ceo, employeePath) as Employee | undefined;
+    }
+    return employee;
+  }
+
   public move(employeeID: number, supervisorID: number): void {
     const newMove: Move = { employeeID, newSupervisorID: supervisorID, oldSupervisorID: supervisorID };
     const employeePath = this.findEmployee(this.ceo, employeeID);
     if (typeof employeePath === "string") {
-      const employee = get(this.ceo, employeePath) as Employee | undefined;
+      const employee = this.fetchEmployee(employeePath);
       if (employee !== undefined) {
         // Change the supervisor of the employee's subordinates
         const oldSupervisorPath = this.getSupervisorPath(employeePath);
         if (typeof oldSupervisorPath === "string") {
-          const oldSupervisor = get(this.ceo, oldSupervisorPath) as Employee | undefined;
+          const oldSupervisor = this.fetchEmployee(oldSupervisorPath);
           if (typeof oldSupervisor !== undefined) {
             while (employee.subordinates.length > 0) {
               const subordinate = employee.subordinates.pop() as Employee;
@@ -61,7 +71,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
         // Change the supervisor of the employee
         const newSupervisorPath = this.findEmployee(this.ceo, supervisorID);
         if (typeof newSupervisorPath === "string") {
-          const newSupervisor = get(this.ceo, newSupervisorPath) as Employee | undefined;
+          const newSupervisor = this.fetchEmployee(newSupervisorPath);
           if (newSupervisor !== undefined) {
             newSupervisor.subordinates.push(employee);
           }
@@ -84,7 +94,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
 
 (() => {
   const app = new EmployeeOrgApp(Mark);
-  console.log(JSON.stringify(Mark));
+  // console.log(JSON.stringify(Mark));
   app.move(12, 14);
-  console.log(JSON.stringify(app.ceo));
+  // console.log(JSON.stringify(app.ceo));
 })();
