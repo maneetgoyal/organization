@@ -51,13 +51,17 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
         return employee;
     }
 
+    private removeSubordinate(employee: Employee, subordinateID: number) {
+        employee.subordinates = employee.subordinates.filter((ele) => ele.uniqueID !== subordinateID)
+    }
+
     public move(employeeID: number, supervisorID: number): void {
         this.lastMove = { employeeID, oldSupervisorID: NaN, newSupervisorID: supervisorID, subordinatesMoved: [] };
         const employeePath = this.findEmployeePath(this.ceo, employeeID);
         if (typeof employeePath === "string") {
             const employee = this.getEmployee(employeePath);
             if (employee !== undefined) {
-                // Change the supervisor of the employee's subordinates
+                // Change the supervisor of the employee's subordinates and remove employee from the current suprevisor
                 const oldSupervisorPath = this.extractSupervisorPath(employeePath);
                 if (typeof oldSupervisorPath === "string") {
                     const oldSupervisor = this.getEmployee(oldSupervisorPath);
@@ -68,6 +72,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                             oldSupervisor.subordinates.push(subordinate);
                             this.lastMove.subordinatesMoved.push(subordinate);
                         }
+                        this.removeSubordinate(oldSupervisor, employeeID);
                     }
                 }
 
@@ -107,7 +112,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                     if (typeof newSupervisorPath === "string") {
                         const newSupervisor = this.getEmployee(newSupervisorPath);
                         if (newSupervisor !== undefined) {
-                            newSupervisor.subordinates = newSupervisor.subordinates.filter((ele) => ele.uniqueID !== employee.uniqueID)
+                            this.removeSubordinate(newSupervisor, employee.uniqueID)
                         }
                     }
                 }
