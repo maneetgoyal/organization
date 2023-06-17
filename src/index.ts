@@ -5,6 +5,8 @@ function test() {
   const app = new EmployeeOrgApp(Mark);
   app.move(12, 14);
   app.undo();
+  app.redo();
+  app.undo();
 }
 
 test();
