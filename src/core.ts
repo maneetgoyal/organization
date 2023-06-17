@@ -84,7 +84,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
     }
 
     public undo(): void {
-        if (this.undid === false) {
+        if (this.lastMove !== undefined && this.undid === false) {
             console.log(".....", this.lastMove)
             this.undid = true;
         }
