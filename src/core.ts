@@ -61,11 +61,11 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                 const oldSupervisorPath = this.extractSupervisorPath(employeePath);
                 if (typeof oldSupervisorPath === "string") {
                     const oldSupervisor = this.getEmployee(oldSupervisorPath);
-                    if (typeof oldSupervisor !== undefined) {
-                        this.lastMove.oldSupervisorID = oldSupervisor?.uniqueID ?? NaN;
+                    if (oldSupervisor !== undefined) {
+                        this.lastMove.oldSupervisorID = oldSupervisor.uniqueID;
                         while (employee.subordinates.length > 0) {
                             const subordinate = employee.subordinates.shift() as Employee;
-                            oldSupervisor?.subordinates.push(subordinate);
+                            oldSupervisor.subordinates.push(subordinate);
                             this.lastMove.subordinatesMoved.push(subordinate);
                         }
                     }
