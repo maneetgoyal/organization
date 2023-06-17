@@ -6,13 +6,14 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
 
     private lastMove?: Move;
 
-    private undid?: boolean;
+    private undid: boolean;
 
     constructor(employee: Employee) {
         this.ceo = employee;
+        this.undid = false;
     }
 
-    private findEmployee(currentEmployee: Employee, employeeID: number): string | undefined {
+    private findEmployeePath(currentEmployee: Employee, employeeID: number): string | undefined {
         let path: string | undefined;
         if (currentEmployee.uniqueID === employeeID) {
             path = "";
@@ -21,7 +22,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
             if (index !== -1) {
                 path = `subordinates[${index}]`;
             } else {
-                const paths = currentEmployee.subordinates.map((ele) => this.findEmployee(ele, employeeID));
+                const paths = currentEmployee.subordinates.map((ele) => this.findEmployeePath(ele, employeeID));
                 const index = paths.findIndex(ele => typeof ele === "string");
                 if (index !== -1) {
                     path = `subordinates[${index}].${paths[index]}`;
@@ -52,7 +53,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
 
     public move(employeeID: number, supervisorID: number): void {
         this.lastMove = { employeeID, oldSupervisorID: NaN, newSupervisorID: supervisorID, subordinatesMoved: [] };
-        const employeePath = this.findEmployee(this.ceo, employeeID);
+        const employeePath = this.findEmployeePath(this.ceo, employeeID);
         if (typeof employeePath === "string") {
             const employee = this.fetchEmployee(employeePath);
             if (employee !== undefined) {
@@ -71,7 +72,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                 }
 
                 // Change the supervisor of the employee
-                const newSupervisorPath = this.findEmployee(this.ceo, supervisorID);
+                const newSupervisorPath = this.findEmployeePath(this.ceo, supervisorID);
                 if (typeof newSupervisorPath === "string") {
                     const newSupervisor = this.fetchEmployee(newSupervisorPath);
                     if (newSupervisor !== undefined) {
@@ -83,8 +84,10 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
     }
 
     public undo(): void {
-        console.log("undo", this.lastMove)
-        this.undid = true;
+        if (this.undid === false) {
+            console.log(".....", this.lastMove)
+            this.undid = true;
+        }
     }
 
     public redo(): void {
