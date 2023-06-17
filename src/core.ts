@@ -64,7 +64,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                     if (typeof oldSupervisor !== undefined) {
                         this.lastMove.oldSupervisorID = oldSupervisor?.uniqueID ?? NaN;
                         while (employee.subordinates.length > 0) {
-                            const subordinate = employee.subordinates.pop() as Employee;
+                            const subordinate = employee.subordinates.shift() as Employee;
                             oldSupervisor?.subordinates.push(subordinate);
                             this.lastMove.subordinatesMoved.push(subordinate);
                         }
@@ -90,7 +90,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                 const employee = this.getEmployee(employeePath);
                 if (employee !== undefined) {
                     // Add the subordinates back and restore the old supervisor
-                    employee.subordinates = [...employee.subordinates, ...this.lastMove.subordinatesMoved];
+                    employee.subordinates.push(...this.lastMove.subordinatesMoved);
                     const oldSupervisorPath = this.findEmployeePath(this.ceo, this.lastMove.oldSupervisorID);
                     if (typeof oldSupervisorPath === "string") {
                         const oldSupervisor = this.getEmployee(oldSupervisorPath);
@@ -98,7 +98,8 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                             const filteredSubordinates = oldSupervisor.subordinates.filter((ele) => this.lastMove?.subordinatesMoved.every((sub) => {
                                 return sub.uniqueID !== ele.uniqueID;
                             }));
-                            oldSupervisor.subordinates = [...filteredSubordinates, employee];
+                            // oldSupervisor.subordinates = [...filteredSubordinates, employee];
+                            oldSupervisor.subordinates = filteredSubordinates;
                         }
                     }
 
