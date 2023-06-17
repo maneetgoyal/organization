@@ -1,4 +1,4 @@
 #### Details
 
 - Used TSDX template.
-- Run `yarn && node .` to execute the code.
+- Run `yarn && yarn test` to execute the code.
