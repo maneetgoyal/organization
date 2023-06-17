@@ -32,7 +32,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
         return path;
     }
 
-    private getSupervisorPath(input?: string): string | undefined {
+    private extractSupervisorPath(input?: string): string | undefined {
         const index = input?.lastIndexOf(".");
         let path: string | undefined;
         if (typeof index === "number" && index !== -1) {
@@ -58,7 +58,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
             const employee = this.fetchEmployee(employeePath);
             if (employee !== undefined) {
                 // Change the supervisor of the employee's subordinates
-                const oldSupervisorPath = this.getSupervisorPath(employeePath);
+                const oldSupervisorPath = this.extractSupervisorPath(employeePath);
                 if (typeof oldSupervisorPath === "string") {
                     const oldSupervisor = this.fetchEmployee(oldSupervisorPath);
                     if (typeof oldSupervisor !== undefined) {
