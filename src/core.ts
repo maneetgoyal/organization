@@ -4,7 +4,9 @@ import type { Employee, IEmployeeOrgApp, Move } from "./types";
 export class EmployeeOrgApp implements IEmployeeOrgApp {
     ceo: Employee;
 
-    private lastMove: Move | undefined;
+    private lastMove?: Move;
+
+    private undid?: boolean;
 
     constructor(employee: Employee) {
         this.ceo = employee;
@@ -82,12 +84,13 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
 
     public undo(): void {
         console.log("undo", this.lastMove)
+        this.undid = true;
     }
 
     public redo(): void {
-        console.log("redo", this.lastMove)
-        if (this.lastMove !== undefined) {
-            this.move(this.lastMove.employeeID, this.lastMove.newSupervisorID)
+        if (this.lastMove !== undefined && this.undid === true) {
+            this.move(this.lastMove.employeeID, this.lastMove.newSupervisorID);
+            this.undid = false;
         }
     }
 }
