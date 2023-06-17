@@ -41,7 +41,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
         return path;
     }
 
-    private fetchEmployee(employeePath: string): Employee | undefined {
+    private getEmployee(employeePath: string): Employee | undefined {
         let employee: Employee | undefined;
         if (employeePath === "") {
             employee = this.ceo;
@@ -55,12 +55,12 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
         this.lastMove = { employeeID, oldSupervisorID: NaN, newSupervisorID: supervisorID, subordinatesMoved: [] };
         const employeePath = this.findEmployeePath(this.ceo, employeeID);
         if (typeof employeePath === "string") {
-            const employee = this.fetchEmployee(employeePath);
+            const employee = this.getEmployee(employeePath);
             if (employee !== undefined) {
                 // Change the supervisor of the employee's subordinates
                 const oldSupervisorPath = this.extractSupervisorPath(employeePath);
                 if (typeof oldSupervisorPath === "string") {
-                    const oldSupervisor = this.fetchEmployee(oldSupervisorPath);
+                    const oldSupervisor = this.getEmployee(oldSupervisorPath);
                     if (typeof oldSupervisor !== undefined) {
                         this.lastMove.oldSupervisorID = oldSupervisor?.uniqueID ?? NaN;
                         while (employee.subordinates.length > 0) {
@@ -74,7 +74,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                 // Change the supervisor of the employee
                 const newSupervisorPath = this.findEmployeePath(this.ceo, supervisorID);
                 if (typeof newSupervisorPath === "string") {
-                    const newSupervisor = this.fetchEmployee(newSupervisorPath);
+                    const newSupervisor = this.getEmployee(newSupervisorPath);
                     if (newSupervisor !== undefined) {
                         newSupervisor.subordinates.push(employee);
                     }
