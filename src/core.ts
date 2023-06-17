@@ -85,7 +85,33 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
 
     public undo(): void {
         if (this.lastMove !== undefined && this.undid === false) {
-            console.log(".....", this.lastMove)
+            const employeePath = this.findEmployeePath(this.ceo, this.lastMove.employeeID);
+            if (typeof employeePath === "string") {
+                const employee = this.getEmployee(employeePath);
+                if (employee !== undefined) {
+                    // Add the subordinates back and restore the old supervisor
+                    employee.subordinates = [...employee.subordinates, ...this.lastMove.subordinatesMoved];
+                    const oldSupervisorPath = this.findEmployeePath(this.ceo, this.lastMove.oldSupervisorID);
+                    if (typeof oldSupervisorPath === "string") {
+                        const oldSupervisor = this.getEmployee(oldSupervisorPath);
+                        if (oldSupervisor !== undefined) {
+                            const filteredSubordinates = oldSupervisor.subordinates.filter((ele) => this.lastMove?.subordinatesMoved.every((sub) => {
+                                return sub.uniqueID !== ele.uniqueID;
+                            }));
+                            oldSupervisor.subordinates = [...filteredSubordinates, employee];
+                        }
+                    }
+
+                    // Remove from the new supervisor
+                    const newSupervisorPath = this.findEmployeePath(this.ceo, this.lastMove.newSupervisorID);
+                    if (typeof newSupervisorPath === "string") {
+                        const newSupervisor = this.getEmployee(newSupervisorPath);
+                        if (newSupervisor !== undefined) {
+                            newSupervisor.subordinates = newSupervisor.subordinates.filter((ele) => ele.uniqueID !== employee.uniqueID)
+                        }
+                    }
+                }
+            }
             this.undid = true;
         }
     }
