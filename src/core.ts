@@ -98,8 +98,7 @@ export class EmployeeOrgApp implements IEmployeeOrgApp {
                             const filteredSubordinates = oldSupervisor.subordinates.filter((ele) => this.lastMove?.subordinatesMoved.every((sub) => {
                                 return sub.uniqueID !== ele.uniqueID;
                             }));
-                            // oldSupervisor.subordinates = [...filteredSubordinates, employee];
-                            oldSupervisor.subordinates = filteredSubordinates;
+                            oldSupervisor.subordinates = [...filteredSubordinates, employee];
                         }
                     }
 
