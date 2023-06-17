@@ -1,5 +1,5 @@
 import { EmployeeOrgApp } from "./core";
-import { Mark } from "./example";
+import { Mark } from "./data";
 
 function test() {
   const app = new EmployeeOrgApp(Mark);
